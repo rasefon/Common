@@ -20,6 +20,6 @@ typedef struct _bitmap_
    tUchar   bits[_DEF_CELL_NUM];
 } BITMAP;
 
-BITMAP* new_bitmap();
+extern BITMAP* new_bitmap();
 
 #endif

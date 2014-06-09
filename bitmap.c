@@ -20,9 +20,3 @@ BITMAP* new_bitmap()
    pBitmap->pBits = pBitmap->bits;
 }
 
-// for testing.
-int main(int argc, char** argv)
-{
-   BITMAP *p = new_bitmap();
-   return 1;
-}
