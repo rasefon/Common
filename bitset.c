@@ -99,3 +99,26 @@ bool bitset_none(BITSET* pbs)
 {
    return !bitset_any(pbs);
 }
+
+bool bitset_test(BITSET *pbs, tUshort n)
+{
+   assert(n < _DEF_BITS_NUM);
+
+   bool contained = pbs->bits[_BITS_INDEX(n)] & (1 << _BITS_OFFSET(n));
+   return pbs->inverse ? !contained : contained;
+}
+
+void bitset_add(BITSET *pbs, tUshort n)
+{
+   assert(n < _DEF_BITS_NUM);
+
+   pbs->bits[_BITS_INDEX(n)] |= (1 << _BITS_OFFSET(n));
+}
+
+void bitset_remove(BITSET *pbs, tUshort n)
+{
+   assert(n < _DEF_BITS_NUM);
+
+   pbs->bits[_BITS_INDEX(n)] &= ~(1 << _BITS_OFFSET(n));
+}
+

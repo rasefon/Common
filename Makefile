@@ -1,4 +1,4 @@
-Target = tt
+Target = tt.out
 Objects = main.o bitset.o st.o rw_io.o
 Flags = -g -c -std=c99
 Include = common.h

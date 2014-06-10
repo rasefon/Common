@@ -43,6 +43,12 @@ extern bool bitset_any(BITSET*);
 //Returns whether none of the bits is set.
 extern bool bitset_none(BITSET*);
 
+extern bool bitset_test(BITSET*, tUshort);
+
+extern void bitset_add(BITSET*, tUshort);
+
+extern void bitset_remove(BITSET*, tUshort);
+
 //================================================================================
 
 //==========================useful macros=========================================
