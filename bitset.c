@@ -20,6 +20,8 @@ BITSET* new_bitset()
    pbs->inverse = false;
    pbs->cell_num = _DEF_CELL_NUM;
    pbs->bits_num = _DEF_BITS_NUM;
+
+   return pbs;
 }
 
 void free_bitset(BITSET* pbs)
