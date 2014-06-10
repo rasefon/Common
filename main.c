@@ -1,8 +1,8 @@
-#include "bitmap.h"
+#include "bitset.h"
 // for testing.
 int main(int argc, char** argv)
 {
-   BITMAP *p = new_bitmap();
+   BITSET *p = new_bitset();
    return 1;
 }
 

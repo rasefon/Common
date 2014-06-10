@@ -1,16 +1,16 @@
 Target = tt
-Objects = main.o bitmap.o st.o rw_io.o
+Objects = main.o bitset.o st.o rw_io.o
 Flags = -g -c -std=c99
 Include = common.h
 
 $(Target): $(Objects)
 	gcc -o $(Target) $(Objects)
 
-main.o: main.c bitmap.h $(Include)
+main.o: main.c bitset.h $(Include)
 	gcc $(Flags) main.c
 
-bitmap.o: bitmap.c bitmap.h $(Include)
-	gcc $(Flags) bitmap.c
+bitset.o: bitset.c bitset.h $(Include)
+	gcc $(Flags) bitset.c
 
 st.o: st.c st.h 
 	gcc $(Flags) st.c
