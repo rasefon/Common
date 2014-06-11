@@ -4,7 +4,7 @@
 int main(int argc, char** argv)
 {
    BITSET *p = new_bitset();
-   printf("%d\n", p->cell_num);
+   printf("%p\n", p);
    return 1;
 }
 
