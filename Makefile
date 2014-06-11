@@ -1,6 +1,6 @@
 Target = tt.out
 Objects = main.o bitset.o st.o rw_io.o
-Flags = -g -c -std=c99
+Flags = -g -c -std=c99 -Wall
 Include = common.h
 
 $(Target): $(Objects)

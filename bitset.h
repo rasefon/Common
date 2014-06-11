@@ -17,10 +17,9 @@ typedef unsigned char   tUchar;
 
 typedef struct _bitset_
 {
-   bool     inverse;
    tUshort  cell_num;
    tUshort  bits_num;
-   tUshort  *pBits;
+   tUshort  bytes_num;
    tUshort  bits[_DEF_CELL_NUM];
 } BITSET;
 
@@ -49,10 +48,13 @@ extern void bitset_add(BITSET*, tUshort);
 
 extern void bitset_remove(BITSET*, tUshort);
 
+extern void bitset_flip(BITSET*);
+
+extern bool bitset_is_subset(BITSET* pbs, BITSET* p_sub_bs);
+
 //================================================================================
 
 //==========================useful macros=========================================
-#define BITSET_FLIP(x)     (x->inverse = !x->inverse);
 //================================================================================
 
 #endif

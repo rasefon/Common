@@ -10,16 +10,15 @@
                                  fprintf(stderr, "Can't allocate memory.\n"); \
                                  exit(EXIT_FAILURE); \
                               } \
-                              memset(p,0,sizeof(type));\
-                              p->pBits = p->bits;
+                              memset(p,0,sizeof(type));
 
 BITSET* new_bitset()
 {
    BITSET *pbs = (BITSET*)malloc(sizeof(BITSET));
    _INIT_STRUCT(pbs, BITSET);
-   pbs->inverse = false;
-   pbs->cell_num = _DEF_CELL_NUM;
    pbs->bits_num = _DEF_BITS_NUM;
+   pbs->cell_num = _DEF_CELL_NUM;
+   pbs->bytes_num = _DEF_BYTE_NUM;
 
    return pbs;
 }
@@ -33,14 +32,14 @@ void free_bitset(BITSET* pbs)
 
 BITSET* dup_bitset(BITSET *pbs)
 {
-   assert(pbs->pBits == pbs->bits);
+   assert(pbs);
 
    BITSET* p_new_bs;
    _INIT_STRUCT(p_new_bs, BITSET);
-   p_new_bs->inverse = pbs->inverse;
-   p_new_bs->cell_num = pbs->cell_num;
    p_new_bs->bits_num = pbs->bits_num;
-   memcpy(p_new_bs->pBits, pbs->pBits, _DEF_BYTE_NUM);
+   p_new_bs->cell_num = pbs->cell_num;
+   p_new_bs->bytes_num = pbs->bytes_num;
+   memcpy(p_new_bs->bits, pbs->bits, pbs->bytes_num);
 
    return p_new_bs;
 }
@@ -67,7 +66,7 @@ int bitset_count(BITSET *pbs)
    };
    
    int count = 0;
-   tUchar *p = (tUchar*)pbs->pBits;
+   tUchar *p = (tUchar*)pbs->bits;
    // original width of per cell is 2 bytes, now because i use only 1 byte pointer, I must engarge up
    // bound of iteration.
    int up_bound = pbs->cell_num << 1;
@@ -75,13 +74,13 @@ int bitset_count(BITSET *pbs)
       count += bits_per_char[*p++];
    }
    
-   return pbs->inverse ? 256-count : count;
+   return count;
 }
 
 void reset_bitset(BITSET *pbs)
 {
-   assert(pbs->pBits == pbs->bits);
-   memset(pbs->pBits, 0, _DEF_BYTE_NUM);
+   assert(pbs);
+   memset(pbs->bits, 0, pbs->bytes_num);
 }
 
 bool bitset_any(BITSET* pbs)
@@ -94,7 +93,7 @@ bool bitset_any(BITSET* pbs)
       }
    }
 
-   return pbs->inverse ? !any : any;
+   return any;
 }
 
 bool bitset_none(BITSET* pbs)
@@ -104,23 +103,57 @@ bool bitset_none(BITSET* pbs)
 
 bool bitset_test(BITSET *pbs, tUshort n)
 {
-   assert(n < _DEF_BITS_NUM);
+   assert(pbs && n < pbs->bits_num);
 
-   bool contained = pbs->bits[_BITS_INDEX(n)] & (1 << _BITS_OFFSET(n));
-   return pbs->inverse ? !contained : contained;
+   return pbs->bits[_BITS_INDEX(n)] & (1 << _BITS_OFFSET(n));
 }
 
 void bitset_add(BITSET *pbs, tUshort n)
 {
-   assert(n < _DEF_BITS_NUM);
+   assert(pbs && n < pbs->bits_num);
 
    pbs->bits[_BITS_INDEX(n)] |= (1 << _BITS_OFFSET(n));
 }
 
 void bitset_remove(BITSET *pbs, tUshort n)
 {
-   assert(n < _DEF_BITS_NUM);
+   assert(pbs && n < pbs->bits_num);
 
    pbs->bits[_BITS_INDEX(n)] &= ~(1 << _BITS_OFFSET(n));
 }
 
+void bitset_flip(BITSET* pbs)
+{
+   assert(pbs);
+   
+   for(int i = 0; i < pbs->cell_num; i++) {
+      pbs->bits[i] = ~pbs->bits[i];
+   }
+}
+
+bool bitset_is_subset(BITSET* pbs, BITSET* p_sub_bs)
+{
+   assert(pbs && p_sub_bs);
+
+   int same_cell_num = pbs->cell_num;
+   if (pbs->cell_num > p_sub_bs->cell_num) {
+      same_cell_num = p_sub_bs->cell_num;
+   }
+
+   for(int i = 0; i < same_cell_num; ++i) {
+      if ((pbs->bits[i] & p_sub_bs->bits[i]) != p_sub_bs->bits[i]) {
+         return false;
+      }
+   }
+
+   if (pbs->cell_num < p_sub_bs->cell_num) {
+      int remained =  p_sub_bs->cell_num - pbs->cell_num;
+      for (int i = 0; i < remained; ++i) {
+         if (!p_sub_bs->bits[same_cell_num+i]) {
+            return false;
+         }
+      }
+   }
+
+   return true;
+}
